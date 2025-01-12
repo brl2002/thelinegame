@@ -2,27 +2,34 @@ using UnityEngine;
 
 namespace Game
 {
+    [CreateAssetMenu(fileName = "GameSettings", menuName = "Settings/GameSettings", order = 1)]
     public class GameSettings : ScriptableObject
     {
-        [SerializeField] private int m_HorizontalBlockCount;
-        [SerializeField] private int m_VerticalBlockCount;
-        [SerializeField] private int m_ExtraVerticalBlockCount;
+        [Header("Game Settings")]
+        [SerializeField] private int m_VisibleRowCount = 10;
+        [SerializeField] private int m_BlockCountPerRow = 9;
+        [SerializeField] private float m_ScrollSpeed = 2.0f;
 
-        public int HorizontalBlockCount => m_HorizontalBlockCount;
-        public int VerticalBlockCount => m_VerticalBlockCount;
-        public int ExtraVerticalBlockCount => m_ExtraVerticalBlockCount;
-        
-        public float ScreenHeight { get; private set; }
-        public float ScreenWidth { get; private set; }
-        public float BlockHeight { get; private set; }
+        public int VisibleRowCount => m_VisibleRowCount;
+        public int BlockCountPerRow => m_BlockCountPerRow;
+        public float ScrollSpeed => m_ScrollSpeed;
+
+        public float RowHeight { get; private set; }
         public float BlockWidth { get; private set; }
 
         public void Configure(Camera camera)
         {
-            ScreenHeight = Camera.main.orthographicSize * 2;
-            ScreenWidth = ScreenHeight * Camera.main.pixelWidth / Camera.main.pixelHeight;
-            BlockHeight = ScreenHeight / VerticalBlockCount;
-            BlockWidth = ScreenWidth / HorizontalBlockCount;
+            if (camera == null)
+            {
+                Debug.LogError("Camera is null. Please ensure a camera is provided.");
+                return;
+            }
+
+            float screenHeight = camera.orthographicSize * 2;
+            float screenWidth = screenHeight * camera.pixelWidth / camera.pixelHeight;
+
+            RowHeight = screenHeight / m_VisibleRowCount;
+            BlockWidth = screenWidth / m_BlockCountPerRow;
         }
     }
 }
