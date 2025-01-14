@@ -157,6 +157,7 @@ MonoBehaviour:
   - {fileID: 546580973}
   - {fileID: 2147047023}
   - {fileID: 1408435445}
+  - {fileID: 277350725}
 --- !u!4 &4214955
 Transform:
   m_ObjectHideFlags: 0
@@ -173,6 +174,7 @@ Transform:
   - {fileID: 546580972}
   - {fileID: 2147047022}
   - {fileID: 1408435446}
+  - {fileID: 277350724}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4214956
@@ -188,13 +190,58 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: GameLifetimeScope
+    TypeName: DependencyInjection.GameLifetimeScope
   autoRun: 1
   autoInjectGameObjects:
   - {fileID: 546580971}
   - {fileID: 2147047021}
   - {fileID: 1408435444}
+  - {fileID: 277350723}
   m_SystemsContainer: {fileID: 4214954}
+--- !u!1 &277350723
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 277350724}
+  - component: {fileID: 277350725}
+  m_Layer: 0
+  m_Name: RoadSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &277350724
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277350723}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4214955}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &277350725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277350723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccfd0317c27ce41b08fa54d1fe688aa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &327062287
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +267,7 @@ Transform:
   m_GameObject: {fileID: 327062287}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -2.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -362,80 +409,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6948c75cccb984c73b0a982ccbfc3e4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &851418045
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 851418047}
-  - component: {fileID: 851418046}
-  - component: {fileID: 851418048}
-  m_Layer: 0
-  m_Name: RoadGuardBlockGenerator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &851418046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851418045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eee656f15289248b6b4180903b8b3a81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RoadGuardBlockPrefab: {fileID: 8800764891087449238, guid: e12c21981a24444e69e5e735c589b01b, type: 3}
---- !u!4 &851418047
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851418045}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0023593295, y: 1.5885211, z: 0.021686051}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &851418048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851418045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66417106422614f74b53e057b6d46481, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 291accb801cf141ad8dda5da605bf41d, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 851418046}
-        m_TargetAssemblyTypeName: RoadGuardBlockGenerator, Assembly-CSharp
-        m_MethodName: SetupRoadGuardBlocks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &1262966255
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,12 +456,11 @@ MonoBehaviour:
   parentReference:
     TypeName: 
   autoRun: 1
-  autoInjectGameObjects:
-  - {fileID: 851418045}
-  - {fileID: 0}
+  autoInjectGameObjects: []
   m_GameSettings: {fileID: 11400000, guid: cd2008a5e63e043b3821313fae68b930, type: 2}
   m_GameEventContainer: {fileID: 11400000, guid: a67f4df9a08be4931b530466dc80e2f3, type: 2}
   m_PlayerPrefab: {fileID: 3058206755702916012, guid: b78c7a41b47e4492ca4fbf53002f1397, type: 3}
+  m_RoadBlockPrefab: {fileID: 1480238830403363734, guid: e12c21981a24444e69e5e735c589b01b, type: 3}
 --- !u!1 &1408435444
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,5 +587,4 @@ SceneRoots:
   - {fileID: 1262966257}
   - {fileID: 4214955}
   - {fileID: 519420032}
-  - {fileID: 851418047}
   - {fileID: 327062288}
