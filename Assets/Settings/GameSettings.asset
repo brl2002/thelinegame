@@ -14,5 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_VisibleRowCount: 10
   m_BlockCountPerRow: 9
-  m_ScrollSpeed: 2
+  m_ScrollSpeed: 4
+  m_ScoringFactor: 2
   m_PlayerLocalScale: {x: 0.5, y: 0.5}
+  m_RoadBlockPoolCount: 15
+  m_BoosterSpawningRate: 50
+  m_InvincibilityBoosterTime: 6
+  m_ShrinkerBoosterTime: 10
+  m_ShrinkerPlayerScaleFactor: 0.5
