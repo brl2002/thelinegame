@@ -13,6 +13,9 @@ namespace Road
 {
     public class RoadSystem : ASystem
     {
+        public bool IsRunning => m_IsRunning;
+        public float ScrollDistance => m_ScrollDistance;
+        
         [Header("Debug")] 
         [SerializeField] private bool m_IsDebugging = false;
 
@@ -47,9 +50,6 @@ namespace Road
         private float m_ScrollDistance;
 
         private bool m_IsRunning = false;
-
-        public bool IsRunning => m_IsRunning;
-        public float ScrollDistance => m_ScrollDistance;
 
         public void Reset()
         {

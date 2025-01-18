@@ -11,14 +11,14 @@ namespace Road
     [RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
     public class RoadBlock : MonoBehaviour
     {
-        [SerializeField] private Color m_StartingColor;
-        [SerializeField] private Color m_TargetColor;
-        [SerializeField] private LayerMask m_PlayerMask;
-
         public event Action<RoadBlock> OnPlayerCollision;
         
         public bool IsActive { get; private set; }
         
+        [SerializeField] private Color m_StartingColor;
+        [SerializeField] private Color m_TargetColor;
+        [SerializeField] private LayerMask m_PlayerMask;
+
         private SpriteRenderer m_SpriteRenderer;
         private BoxCollider2D m_BoxCollider2D;
 
@@ -46,14 +46,6 @@ namespace Road
         public void Flicker()
         {
             StartCoroutine(Flicker(1, 3));
-        }
-
-        private void OnTriggerEnter2D(Collider2D col)
-        {
-            if ((m_PlayerMask & 1 << col.gameObject.layer) == 1 << col.gameObject.layer)
-            {
-                OnPlayerCollision?.Invoke(this);
-            }
         }
 
         private IEnumerator Flicker(float secondPerFlicker, int flickerCount)
@@ -87,6 +79,14 @@ namespace Road
         {
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_BoxCollider2D = GetComponent<BoxCollider2D>();
+        }
+        
+        private void OnTriggerEnter2D(Collider2D col)
+        {
+            if ((m_PlayerMask & 1 << col.gameObject.layer) == 1 << col.gameObject.layer)
+            {
+                OnPlayerCollision?.Invoke(this);
+            }
         }
     }
 }

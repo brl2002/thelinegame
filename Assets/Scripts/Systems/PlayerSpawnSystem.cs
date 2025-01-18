@@ -6,15 +6,15 @@ namespace Systems
 {
     public class PlayerSpawnSystem : ASystem
     {
+        public Player Player => m_Player;
+        public Vector2 PlayerSpawnPosition => m_PlayerSpawnPosition;
+        
         [SerializeField] private Transform m_PlayerSpawnTransform;
         
         [Inject] private PlayerFactory m_PlayerFactory;
         
         private Player m_Player;
         private Vector2 m_PlayerSpawnPosition;
-        
-        public Player Player => m_Player;
-        public Vector2 PlayerSpawnPosition => m_PlayerSpawnPosition;
 
         public void Reset()
         {

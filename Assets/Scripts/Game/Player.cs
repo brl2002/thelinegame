@@ -5,14 +5,14 @@ namespace Game
 {
     public class Player : MonoBehaviour
     {
-        [SerializeField] private LayerMask m_RoadBlockLayer;
-
         public event Action OnRoadBlockCollision;
         public event Action OnStateChangeActive;
         public event Action OnStateChangeInactive;
         
         public bool IsInvincible { get; private set; }
         public bool IsShrink { get; private set; }
+        
+        [SerializeField] private LayerMask m_RoadBlockLayer;
 
         private bool m_IsPaused = false;
 

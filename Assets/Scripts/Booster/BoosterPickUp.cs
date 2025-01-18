@@ -12,14 +12,14 @@ namespace Booster
     
     public class BoosterPickUp : MonoBehaviour
     {
+        public event Action<BoosterPickUp> OnPickUpBooster;
+        
+        public BoosterType BoosterType { get; private set; }
+        public float BoosterTime { get; private set; }
+        
         [SerializeField] private Color m_StartingColor;
         [SerializeField] private Color m_TargetColor;
         [SerializeField] private LayerMask m_PlayerMask;
-
-        public event Action<BoosterPickUp> OnPickUpBooster;
-
-        public BoosterType BoosterType { get; private set; }
-        public float BoosterTime { get; private set; }
 
         private SpriteRenderer m_SpriteRenderer;
         private Coroutine m_FlickerCoroutine;
@@ -45,14 +45,6 @@ namespace Booster
             {
                 StopCoroutine(m_FlickerCoroutine);
                 m_FlickerCoroutine = null;
-            }
-        }
-        
-        private void OnTriggerEnter2D(Collider2D col)
-        {
-            if ((m_PlayerMask & 1 << col.gameObject.layer) == 1 << col.gameObject.layer)
-            {
-                OnPickUpBooster?.Invoke(this);
             }
         }
 
@@ -94,6 +86,14 @@ namespace Booster
         private void Start()
         {
             StartFlicker();
+        }
+        
+        private void OnTriggerEnter2D(Collider2D col)
+        {
+            if ((m_PlayerMask & 1 << col.gameObject.layer) == 1 << col.gameObject.layer)
+            {
+                OnPickUpBooster?.Invoke(this);
+            }
         }
     }
 }
