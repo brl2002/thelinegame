@@ -3,8 +3,9 @@ namespace Game
     public enum GameState
     {
         Standby,
-        Menu,
+        Pause,
         Playing,
+        PreGameOver,
         GameOver
     }
 }
