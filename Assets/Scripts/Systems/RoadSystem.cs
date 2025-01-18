@@ -1,24 +1,30 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Core;
 using Game;
 using Systems;
 using UnityEngine;
 using VContainer;
+using Random = UnityEngine.Random;
 
 namespace Road
 {
     public class RoadSystem : ASystem
     {
-        [Inject] private GameSettings m_GameSettings;
-        [Inject] private RoadBlockRowGroupFactory m_RoadBlockRowGroupFactory;
-
         [Header("Debug")] 
         [SerializeField] private bool m_IsDebugging = false;
 
+        [Inject] private SystemsContainer m_SystemsContainer;
+        [Inject] private GameSettings m_GameSettings;
+        [Inject] private RoadBlockRowGroupFactory m_RoadBlockRowGroupFactory;
+
         private ObjectPool<RoadBlockRowGroup> m_RoadBlockRowGroupObjectPool;
-        private List<RoadBlockRowGroup> m_RoadBlockRowGroups;
-        private Transform m_RoadParent;
+        private LinkedList<RoadBlockRowGroup> m_RoadBlockRowGroups;
+        private Transform m_RoadParentTransform;
         private Camera m_MainCamera;
+        private PlayerSpawnSystem m_PlayerSpawnSystem;
 
         private int m_TotalRowCount;
 
@@ -38,35 +44,104 @@ namespace Road
         
         private float m_LastRowYPosition;
 
+        private float m_ScrollDistance;
+
+        private bool m_IsRunning = false;
+
+        public bool IsRunning => m_IsRunning;
+        public float ScrollDistance => m_ScrollDistance;
+
+        public void Reset()
+        {
+            ClearRoadBlocks();
+            SetupRoad();
+        }
+
+        public void StartRunning()
+        {
+            if (!m_IsRunning)
+            {
+                m_IsRunning = true;
+            }
+        }
+
+        public void StopRunning()
+        {
+            if (m_IsRunning)
+            {
+                m_IsRunning = false;   
+            }
+        }
+
+        public RoadBlock GetRandomDisabledRoadBlock()
+        {
+            return m_RoadBlockRowGroups.Last.Value.GetDisabledRoadBlock();
+        }
+
+        public RoadBlock GetRandomDisabledRoadBlock(int rowGroupIndex, int roadBlockIndex)
+        {
+            return m_RoadBlockRowGroups.ElementAt(rowGroupIndex).GetRoadBlock(roadBlockIndex);
+        }
+        
+        public void ScrollRows(float scrollDistance)
+        {
+            m_ScrollDistance += scrollDistance;
+            foreach (var rowGroup in m_RoadBlockRowGroups)
+            {
+                rowGroup.transform.Translate(0, -scrollDistance, 0);
+            }
+        }
+
         public override void Initialize()
         {
             m_MainCamera = Camera.main;
 
-            m_RoadParent = new GameObject("RoadParent").transform;
-            m_RoadBlockRowGroupObjectPool = new ObjectPool<RoadBlockRowGroup>(m_RoadParent);
-            for (int i = 0; i < 15; i++)
+            m_PlayerSpawnSystem = m_SystemsContainer.GetSystem<PlayerSpawnSystem>();
+
+            m_RoadParentTransform = new GameObject("RoadParent").transform;
+            m_RoadBlockRowGroupObjectPool = new ObjectPool<RoadBlockRowGroup>(m_RoadParentTransform);
+            for (int i = 0; i < m_GameSettings.RoadBlockPoolCount; i++)
             {
-                m_RoadBlockRowGroupObjectPool.AddToPool(m_RoadBlockRowGroupFactory.CreateRowGroup(m_RoadParent, 0));
+                m_RoadBlockRowGroupObjectPool.AddToPool(m_RoadBlockRowGroupFactory.CreateRowGroup(m_RoadParentTransform, 0, OnRoadBlockCollidedWithPlayer));
             }
             
-            m_RoadBlockRowGroups = new List<RoadBlockRowGroup>();
+            m_RoadBlockRowGroups = new LinkedList<RoadBlockRowGroup>();
+        }
+
+        private void OnRoadBlockCollidedWithPlayer(RoadBlock roadBlock)
+        {
+            if (m_PlayerSpawnSystem.Player.IsInvincible)
+            {
+                roadBlock.SetBlockActive(false);
+            }
+            else
+            {
+                roadBlock.Flicker();
+            }
+        }
+
+        private void ClearRoadBlocks()
+        {
+            foreach (var roadBlockRowGroup in m_RoadBlockRowGroups)
+            {
+                m_RoadBlockRowGroupObjectPool.ReturnToPool(roadBlockRowGroup);
+            }
+            m_RoadBlockRowGroups.Clear();
+        }
+
+        private void SetupRoad()
+        {
             m_LastRowYPosition = m_MainCamera.transform.position.y - m_MainCamera.orthographicSize;
+
+            m_ScrollDistance = 0;
             
             InitializeStartingRoadGuardBlock();
             ConfigureNextSegment();
         }
 
-        private void ScrollRows()
-        {
-            foreach (var rowGroup in m_RoadBlockRowGroups)
-            {
-                rowGroup.transform.Translate(0, -m_GameSettings.ScrollSpeed * Time.deltaTime, 0);
-            }
-        }
-
         private void TryRecycleRows()
         {
-            RoadBlockRowGroup firstRowGroup = m_RoadBlockRowGroups[0];
+            RoadBlockRowGroup firstRowGroup = m_RoadBlockRowGroups.First.Value;
 
             // Check if the first row has moved completely off the bottom of the screen
             if (firstRowGroup.transform.position.y < m_MainCamera.transform.position.y - m_MainCamera.orthographicSize - m_GameSettings.RowHeight)
@@ -74,17 +149,17 @@ namespace Road
                 RoadBlockRowGroup newLastRowGroup = m_RoadBlockRowGroupObjectPool.GetFromPool();
                 
                 // Get the Y position of the last row group
-                RoadBlockRowGroup lastRowGroup = m_RoadBlockRowGroups[^1];
+                RoadBlockRowGroup lastRowGroup = m_RoadBlockRowGroups.Last.Value;
                 float newYPosition = lastRowGroup.transform.position.y + m_GameSettings.RowHeight;
                 
                 newLastRowGroup.transform.position = new Vector3(0, newYPosition, 0);
 
                 ApplyRoadPattern(newLastRowGroup);
                 
-                m_RoadBlockRowGroups.RemoveAt(0);
+                m_RoadBlockRowGroups.RemoveFirst();
                 m_RoadBlockRowGroupObjectPool.ReturnToPool(firstRowGroup);
                 
-                m_RoadBlockRowGroups.Add(newLastRowGroup);
+                m_RoadBlockRowGroups.AddLast(newLastRowGroup);
             }
         }
         
@@ -159,12 +234,6 @@ namespace Road
             if (m_IsHorizontalSegment)
             {
                 rowGroup.DisableRoadBlocksInRange(m_HorizontalStartIndex, m_HorizontalEndIndex);
-
-                // Update the last column index after the second row of the horizontal pattern
-                // if (m_SegmentCounter == 1) // Second row of the horizontal pattern
-                // {
-                //     m_LastColumnIndex = m_ConnectToRightEnd ? m_HorizontalEndIndex : m_HorizontalStartIndex;
-                // }
             }
             else
             {
@@ -195,7 +264,7 @@ namespace Road
                 RoadBlockRowGroup rowGroup = m_RoadBlockRowGroupObjectPool.GetFromPool();
                 rowGroup.DisableAllRoadBlocks();
                 rowGroup.transform.position = new Vector3(0, m_LastRowYPosition, 0);
-                m_RoadBlockRowGroups.Add(rowGroup);
+                m_RoadBlockRowGroups.AddLast(rowGroup);
                 m_LastRowYPosition += m_GameSettings.RowHeight;
             }
         
@@ -213,7 +282,7 @@ namespace Road
                     // Narrow the void by reducing the start and end indices
                     rowGroup.DisableRoadBlocksInRange(currentStartIndex, currentEndIndex);
         
-                    m_RoadBlockRowGroups.Add(rowGroup);
+                    m_RoadBlockRowGroups.AddLast(rowGroup);
                     m_LastRowYPosition += m_GameSettings.RowHeight;
                 }
                 
@@ -239,7 +308,7 @@ namespace Road
             RoadBlockRowGroup verticalRowGroup = m_RoadBlockRowGroupObjectPool.GetFromPool();
             verticalRowGroup.transform.position = new Vector3(0, m_LastRowYPosition, 0);
             verticalRowGroup.DisableRoadBlockAtIndex(m_VerticalColumnIndex);
-            m_RoadBlockRowGroups.Add(verticalRowGroup);
+            m_RoadBlockRowGroups.AddLast(verticalRowGroup);
         
             // Update the last row position for further road generation
             m_LastRowYPosition += m_GameSettings.RowHeight;
@@ -248,11 +317,13 @@ namespace Road
             m_IsHorizontalSegment = false; // next segment is vertical
             m_SegmentCounter = 0;
         }
-        
+
         private void Update()
         {
-            ScrollRows();
-            TryRecycleRows();
+            if (m_IsRunning)
+            {
+                TryRecycleRows();
+            }
         }
     }
 }
