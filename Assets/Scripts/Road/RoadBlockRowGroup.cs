@@ -10,6 +10,23 @@ namespace Road
         {
             m_RoadBlocks = GetComponentsInChildren<RoadBlock>(true);
         }
+
+        public RoadBlock GetDisabledRoadBlock()
+        {
+            foreach (var roadBlock in m_RoadBlocks)
+            {
+                if (!roadBlock.IsActive)
+                {
+                    return roadBlock;
+                }
+            }
+            return null;
+        }
+
+        public RoadBlock GetRoadBlock(int index)
+        {
+            return m_RoadBlocks[index];
+        }
         
         public void DisableAllRoadBlocks()
         {
@@ -24,7 +41,7 @@ namespace Road
             for (int i = 0; i < m_RoadBlocks.Length; i++)
             {
                 bool isRoad = i < startIndex || i > endIndex;
-                m_RoadBlocks[i].SetIsEnabled(isRoad);
+                m_RoadBlocks[i].SetBlockActive(isRoad);
             }
         }
 
@@ -33,7 +50,7 @@ namespace Road
             for (int i = 0; i < m_RoadBlocks.Length; i++)
             {
                 // Make sure all blocks in other columns are disabled
-                m_RoadBlocks[i].SetIsEnabled(i != columnIndex);
+                m_RoadBlocks[i].SetBlockActive(i != columnIndex);
             }
         }
 
@@ -41,7 +58,7 @@ namespace Road
         {
             foreach (var block in m_RoadBlocks)
             {
-                block.SetIsEnabled(true);
+                block.SetBlockActive(true);
             }
         }
     }

@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Road
@@ -9,40 +11,82 @@ namespace Road
     [RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
     public class RoadBlock : MonoBehaviour
     {
+        [SerializeField] private Color m_StartingColor;
+        [SerializeField] private Color m_TargetColor;
+        [SerializeField] private LayerMask m_PlayerMask;
+
+        public event Action<RoadBlock> OnPlayerCollision;
+        
+        public bool IsActive { get; private set; }
+        
         private SpriteRenderer m_SpriteRenderer;
         private BoxCollider2D m_BoxCollider2D;
 
-        private void Awake()
-        {
-            m_SpriteRenderer = GetComponent<SpriteRenderer>();
-            m_BoxCollider2D = GetComponent<BoxCollider2D>();
-        }
-        
         public void SetBlockActive(bool isActive)
         {
-            var spriteRenderer = GetComponent<SpriteRenderer>();
-            var collider = GetComponent<BoxCollider2D>();
-
-            if (spriteRenderer != null)
+            if (m_SpriteRenderer != null)
             {
-                spriteRenderer.enabled = isActive;
+                m_SpriteRenderer.enabled = isActive;
             }
 
-            if (collider != null)
+            if (m_BoxCollider2D != null)
             {
-                collider.enabled = isActive;
+                m_BoxCollider2D.enabled = isActive;
             }
-        }
 
-        public void SetIsEnabled(bool isEnabled)
-        {
-            m_SpriteRenderer.enabled = isEnabled;
-            m_BoxCollider2D.enabled = isEnabled;
+            IsActive = isActive;
         }
 
         public void Reset()
         {
-            SetIsEnabled(true);
+            SetBlockActive(true);
+            m_SpriteRenderer.color = m_StartingColor;
+        }
+
+        public void Flicker()
+        {
+            StartCoroutine(Flicker(1, 3));
+        }
+
+        private void OnTriggerEnter2D(Collider2D col)
+        {
+            if ((m_PlayerMask & 1 << col.gameObject.layer) == 1 << col.gameObject.layer)
+            {
+                OnPlayerCollision?.Invoke(this);
+            }
+        }
+
+        private IEnumerator Flicker(float secondPerFlicker, int flickerCount)
+        {
+            for (int i = 0; i < flickerCount; i++)
+            {
+                Color startColor = m_StartingColor;
+                Color targetColor = m_TargetColor;
+                float elapsedTime = 0f;
+                
+                while (elapsedTime < secondPerFlicker / 2f)
+                {
+                    elapsedTime += Time.deltaTime;
+                    m_SpriteRenderer.color = Color.Lerp(startColor, targetColor, elapsedTime / (secondPerFlicker / 2f));
+                    yield return null;
+                }
+
+                elapsedTime = 0f;
+                
+                while (elapsedTime < secondPerFlicker / 2f)
+                {
+                    elapsedTime += Time.deltaTime;
+                    m_SpriteRenderer.color = Color.Lerp(targetColor, startColor, elapsedTime / (secondPerFlicker / 2f));
+                    yield return null;
+                }
+                m_SpriteRenderer.color = startColor;
+            }
+        }
+        
+        private void Awake()
+        {
+            m_SpriteRenderer = GetComponent<SpriteRenderer>();
+            m_BoxCollider2D = GetComponent<BoxCollider2D>();
         }
     }
 }

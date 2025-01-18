@@ -21,7 +21,7 @@ namespace Road
             m_RoadBlockPrefab = roadBlockPrefab ?? throw new ArgumentNullException(nameof(roadBlockPrefab));
         }
 
-        public RoadBlockRowGroup CreateRowGroup(Transform parent, float rowYPosition)
+        public RoadBlockRowGroup CreateRowGroup(Transform parent, float rowYPosition, Action<RoadBlock> onPlayerCollision)
         {
             GameObject rowGroupObject = new GameObject(ROAD_GUARD_BLOCK_ROW_GROUP_NAME);
             rowGroupObject.transform.parent = parent;
@@ -32,7 +32,7 @@ namespace Road
             for (int i = 0; i < m_GameSettings.BlockCountPerRow; i++)
             {
                 float xPosition = -m_GameSettings.BlockWidth * (m_GameSettings.BlockCountPerRow - 1) / 2f + i * m_GameSettings.BlockWidth;
-                RoadBlock block = CreateRoadBlock(rowGroupObject.transform, xPosition);
+                RoadBlock block = CreateRoadBlock(rowGroupObject.transform, xPosition, onPlayerCollision);
                 block.transform.localScale = new Vector3(m_GameSettings.BlockWidth, m_GameSettings.RowHeight, 1);
             }
             
@@ -41,9 +41,10 @@ namespace Road
             return rowGroup;
         }
 
-        private RoadBlock CreateRoadBlock(Transform parent, float xPosition)
+        private RoadBlock CreateRoadBlock(Transform parent, float xPosition, Action<RoadBlock> onPlayerCollision)
         {
             RoadBlock block = m_Container.Instantiate(m_RoadBlockPrefab, parent);
+            block.OnPlayerCollision += onPlayerCollision;
             block.transform.localPosition = new Vector3(xPosition, 0, 0);
             return block;
         }
