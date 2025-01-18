@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36da1d2f29b1746bc92d876f573ab27e, type: 3}
-  m_Name: GameShowMenuEvent
+  m_Name: BoosterActiveEvent
   m_EditorClassIdentifier: 
