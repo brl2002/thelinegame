@@ -51,11 +51,19 @@ public class BoosterSystem : ASystem
         m_PlayerSpawnSystem = m_SystemsContainer.GetSystem<PlayerSpawnSystem>();
         
         m_BoosterParentTransform = new GameObject("BoosterParent").transform;
-        m_Boosters = new BoosterPickUp[2];
+        m_Boosters = new BoosterPickUp[6];
         m_Boosters[0] = m_BoosterFactory(m_BoosterParentTransform, BoosterType.Invincibility, OnPickUpBooster, m_GameSettings.InvincibilityBoosterTime);
-        m_Boosters[1] = m_BoosterFactory(m_BoosterParentTransform, BoosterType.Shrinker, OnPickUpBooster, m_GameSettings.ShrinkerBoosterTime);
+        m_Boosters[1] = m_BoosterFactory(m_BoosterParentTransform, BoosterType.Invincibility, OnPickUpBooster, m_GameSettings.InvincibilityBoosterTime);
+        m_Boosters[2] = m_BoosterFactory(m_BoosterParentTransform, BoosterType.Invincibility, OnPickUpBooster, m_GameSettings.InvincibilityBoosterTime);
+        m_Boosters[3] = m_BoosterFactory(m_BoosterParentTransform, BoosterType.Shrinker, OnPickUpBooster, m_GameSettings.ShrinkerBoosterTime);
+        m_Boosters[4] = m_BoosterFactory(m_BoosterParentTransform, BoosterType.Shrinker, OnPickUpBooster, m_GameSettings.ShrinkerBoosterTime);
+        m_Boosters[5] = m_BoosterFactory(m_BoosterParentTransform, BoosterType.Shrinker, OnPickUpBooster, m_GameSettings.ShrinkerBoosterTime);
         m_Boosters[0].gameObject.SetActive(false);
         m_Boosters[1].gameObject.SetActive(false);
+        m_Boosters[2].gameObject.SetActive(false);
+        m_Boosters[3].gameObject.SetActive(false);
+        m_Boosters[4].gameObject.SetActive(false);
+        m_Boosters[5].gameObject.SetActive(false);
     }
 
     private BoosterPickUp GetRandomBooster()
