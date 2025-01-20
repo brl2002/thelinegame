@@ -498,7 +498,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 87165243}
         m_TargetAssemblyTypeName: Input.InputHandler, Assembly-CSharp
-        m_MethodName: Reset
+        m_MethodName: Resume
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

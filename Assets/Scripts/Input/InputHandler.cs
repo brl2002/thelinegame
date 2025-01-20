@@ -23,6 +23,12 @@ namespace Input
         public void Reset()
         {
             m_IsInputEnabled = true;
+            m_IsMouseDown = false;
+        }
+
+        public void Resume()
+        {
+            m_IsInputEnabled = true;
         }
 
         public void Pause()

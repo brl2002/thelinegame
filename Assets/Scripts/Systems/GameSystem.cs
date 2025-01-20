@@ -93,7 +93,7 @@ namespace Systems
                 m_GameResetEvent = m_GameEventContainer.GetGameEvent(GameConstants.GAME_RESET_EVENT_INDEX);
                 m_GameEndEvent = m_GameEventContainer.GetGameEvent(GameConstants.GAME_END_EVENT_INDEX);
                 m_GamePauseEvent = m_GameEventContainer.GetGameEvent(GameConstants.GAME_PAUSE_EVENT_INDEX);
-                m_GamePauseEvent = m_GameEventContainer.GetGameEvent(GameConstants.GAME_RESUME_EVENT_INDEX);
+                m_GameResumeEvent = m_GameEventContainer.GetGameEvent(GameConstants.GAME_RESUME_EVENT_INDEX);
                 m_BoosterActiveEvent = m_GameEventContainer.GetGameEvent(GameConstants.BOOSTER_ACTIVE_EVENT_INDEX);
                 m_BoosterInactiveEvent = m_GameEventContainer.GetGameEvent(GameConstants.BOOSTER_INACTIVE_EVENT_INDEX);
 
